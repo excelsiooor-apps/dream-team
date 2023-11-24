@@ -1,0 +1,15 @@
+{
+  "name": "@dream/team",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prelint": "npm run prettier",
+    "lint": "npx turbo run lint"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "license": "MIT"
+}
