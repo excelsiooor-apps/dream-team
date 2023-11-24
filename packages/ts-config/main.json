@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "main-tsconfig",
+  "compilerOptions": {
+      "target": "ESNext",
+      "moduleResolution": "node",
+      "module": "esnext",
+      "outDir": "dist",
+      "incremental": true,
+      "composite": true,
+      "declaration": true,
+      "resolveJsonModule": true,
+      "removeComments": true,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "skipLibCheck": true,
+      "noImplicitAny": true,
+      "strictNullChecks": true,
+      "strictPropertyInitialization": false,
+      "strict": true,
+      "sourceMap": true,
+      "allowUnreachableCode": true,
+      "jsx": "preserve"
+  },
+  "exclude": ["node_modules"]
+}
