@@ -1,8 +1,5 @@
 {
-  "name": "@dream/team",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "@dream-team/monorepo",
   "scripts": {
     "prelint": "npm run prettier",
     "lint": "npx turbo run lint"
