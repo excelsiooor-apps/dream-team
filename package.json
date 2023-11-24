@@ -1,12 +1,16 @@
 {
   "name": "@dream-team/monorepo",
   "scripts": {
-    "prelint": "npm run prettier",
-    "lint": "npx turbo run lint"
+    "setup": "yarn install",
+    "setup:flat": "yarn install --flat",
+    "setup:pure": "yarn install --pure-lockfile",
+    "setup:update": "yarn install --update-checksums",
+    "clean:modules": "npx rimraf node_modules"
   },
   "workspaces": [
     "packages/*",
     "apps/*"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "repository": "https://github.com/excelsiooor/dream-team.git"
 }
