@@ -54,7 +54,8 @@ export class GameService {
       return await this.gameRepository.findOne({where:{id:gameId}});
     })
   }
-  async getGamesByUserId(){
+  async getGamesByUserId(userId:number){
+    console.log(userId);
     throw Error("not emplemented")
   }
   async EndGame(gameId:number){
