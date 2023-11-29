@@ -1,11 +1,20 @@
-import { StatusService } from './StatusService';
-import { GameService } from "./GameService";
-import { UserService } from "./UserSevice";
+import { connectDatabase, disconnectDatabase } from '../connector';
 
 export class DBService{
-  public userService = new UserService();
-  public gameService = new GameService();
-  public statusService = new StatusService();
+  public static async withDatabase<T>(callback: () => Promise<T>): Promise<T | null> {
+    let connection;
+    try {
+      connection = await connectDatabase();
+      return await callback();
+    } catch (error) {
+      console.error('Database operation error:', error);
+      return null;
+    } finally {
+      if (connection) {
+        await disconnectDatabase(connection);
+      }
+    }
+  }
 }
 
 

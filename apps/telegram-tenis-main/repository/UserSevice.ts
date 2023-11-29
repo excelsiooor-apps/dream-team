@@ -1,108 +1,78 @@
 import { SelectQueryBuilder } from "typeorm/query-builder/SelectQueryBuilder";
-import { connectDatabase, disconnectDatabase } from "../connector";
 import { User } from "../entities/User";
+import { DBService } from "./dbService";
+import { Repository, UpdateResult, getRepository } from "typeorm";
+import { Status } from "../entities/Status";
+import { Game } from "../entities/Game";
+import { UserDTO } from "../types/UserType";
+
 export class UserService {
+  private userRepository: Repository<User>;
+  private gameRepository: Repository<Game>;
+  private statusRepository: Repository<Status>;
+
+  constructor() {
+    this.userRepository = getRepository(User);
+    this.gameRepository = getRepository(Game);
+    this.statusRepository = getRepository(Status);
+  }
+
   public async getUsers() {
-    let connection;
-  
-    try {
-      connection = await connectDatabase();
-      const userRepository = connection.getRepository(User);
-      const queryBuilder: SelectQueryBuilder<User> = userRepository.createQueryBuilder('user');
+    return DBService.withDatabase<UserDTO[]>(async ()=>{
+      const queryBuilder: SelectQueryBuilder<User> = this.userRepository.createQueryBuilder('user');
       queryBuilder.orderBy('user.defeats + user.victory', 'DESC');
       const users = await queryBuilder.getMany();
       const result = users.map(user => ({
-        ...user,
+        user: user,
         totalCount: user.calculateCountGame(),
         winningPercentage: user.calculateWinningPercentage(),
       }));      
       return result;
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      if (connection) {
-        await disconnectDatabase(connection);
-      }
-    }
+    }) 
   }
   public async CreateUser(user: User) {
-    let connection;
-    console.log('USER',user)
-    try {
-      connection = await connectDatabase();
-      
-      const userRepository = connection.getRepository(User);
-  
-      const getUser = await userRepository.findOne({ where: { TelegramId: user.TelegramId } });
+    return DBService.withDatabase<User|null>(async ()=>{
+      const getUser = await this.userRepository.findOne({ where: { TelegramId: user.TelegramId } });
       if(!getUser){
         user.victory=0;
         user.defeats=0;
-        const users = await userRepository.create(user);
-        await userRepository.save(users);
-        console.log('user created');
+        const users = await this.userRepository.create(user);
+        return await this.userRepository.save(users);
       }
       else{
         console.log('user exists');
+        return null;
       }
-  
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      if (connection) {
-        await disconnectDatabase(connection);
-      }
-    }
+    })
   }
   public async getUserButton(telegramId:number){
-      console.log(telegramId)
-      const list = (await this.getUsers())?.filter(user=>user.TelegramId !== telegramId);
-      
-      return (list?.map((user)=>{
+    return DBService.withDatabase<{
+      text: string;
+      callback_data: string;
+  }[][] | undefined>(async()=>{
+    const list = (await this.getUsers())?.filter(obj=>obj.user.TelegramId !== telegramId);
+      return (list?.map((obj)=>{
         return [
-          { text: `${user.username}`, callback_data: `/add ${user.id}` }
+          { text: `${obj.user.username}`, callback_data: `/add ${obj.user.id}` }
         ]
       }))
+  })      
   }
   public async getUserById(userId:number){
-    let connection;
-  
-    try {
-      connection = await connectDatabase();
-      const userRepository = connection.getRepository(User);
-      const getUser = await userRepository.findOne({ where: { id: userId } });
+    return DBService.withDatabase<User|null>(async()=>{
+      const getUser = await this.userRepository.findOne({ where: { id: userId } });
       return getUser;
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      if (connection) {
-        await disconnectDatabase(connection);
-      }
-    }
-    
+    })
   }
   public async getUserByTelegramId(TelegramUserId:number){
-    let connection;
-  
-    try {
-      connection = await connectDatabase();
-      const userRepository = connection.getRepository(User);
-      const getUser = await userRepository.findOne({ where: { TelegramId: TelegramUserId } });
+    return DBService.withDatabase<User|null>(async()=>{
+      const getUser = await this.userRepository.findOne({ where: { TelegramId: TelegramUserId } });
       return getUser;
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      if (connection) {
-        await disconnectDatabase(connection);
-      }
-    }
-    
+    })
   }
   public async UpdateUsers(Users: User[]){
-    let connection;  
-    try {
-      connection = await connectDatabase();
-      const userRepository = connection.getRepository(User);
-      const updatePromises = Users.map(user => userRepository.update(user.id, { defeats: user.defeats, victory: user.victory }));
+    return DBService.withDatabase<UpdateResult[]>(async()=>{
+      const updatePromises = Users.map(user => this.userRepository.update(user.id, { defeats: user.defeats, victory: user.victory }));
       const updateResults = await Promise.all(updatePromises);
       updateResults.forEach(result => {
         if (result.affected === 0) {
@@ -110,12 +80,6 @@ export class UserService {
         }
       });  
       return updateResults;
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      if (connection) {
-        await disconnectDatabase(connection);
-      }
-    }
+    })
   }
 }

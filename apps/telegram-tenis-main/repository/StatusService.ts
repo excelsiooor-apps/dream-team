@@ -1,23 +1,19 @@
-import { connectDatabase, disconnectDatabase } from "../connector";
+import { Repository, getRepository } from "typeorm";
 import { Status } from "../entities/Status";
+import { DBService } from "./dbService";
 
 export class StatusService {
+  private statusRepository: Repository<Status>;
+
+  constructor() {
+    this.statusRepository = getRepository(Status);
+  }
+
   public async getStatus() {
-    let connection;  
-    try {
-      connection = await connectDatabase();
-      const StatusRepository = connection.getRepository(Status);
-      const result = await StatusRepository.find();
+    return DBService.withDatabase<Status[]>(async () =>{
+      const result = await this.statusRepository.find();
       console.log('LOG Status', result)
       return result;
-    }
-    catch{
-      console.error('Error')
-    }
-    finally{
-      if (connection) {
-        await disconnectDatabase(connection);
-      }
-    }
-  }
+    })
+}
 }

@@ -1,140 +1,67 @@
 import { Status } from './../entities/Status';
-import { connectDatabase, disconnectDatabase } from "../connector";
 import { Game } from "../entities/Game";
 import { User } from "../entities/User";
+import { DBService } from './dbService';
+import { Repository } from 'typeorm/repository/Repository';
+import { UpdateResult, getRepository } from 'typeorm';
 
-export class GameService { 
-  
-  async createGameForTwoPlayers(player1Id: number, player2Id: number) {
-    let connection;  
-    try {
-      connection = await connectDatabase();
-      const userRepository = connection.getRepository(User);
-      const gameRepository = connection.getRepository(Game);
-      const statusRepository = connection.getRepository(Status);
-      const player1 = await userRepository.findOne({ where: { id: player1Id } });
-      const player2 = await userRepository.findOne({ where: { id: player2Id } });
+export class GameService {
+  private userRepository: Repository<User>;
+  private gameRepository: Repository<Game>;
+  private statusRepository: Repository<Status>;
 
-      const listStatus = await statusRepository.find();
-      const correctStatus = listStatus.find(x=>x.name==='Pending')
-      if (!player1 || !player2) {
-        throw new Error('Не удалось найти одного или обоих игроков.');
-      }
-      // Создаем новую игру
-      const game = gameRepository.create({
-        RegistrationId: player1.id,
-        teamMembers: [player1, player2],
-        status:correctStatus
-      });
-
-      return await gameRepository.save(game);
-    }
-    catch(e){
-      console.log('Error Create Game =>',e)
-    }
-    finally{
-      if (connection) {
-        await disconnectDatabase(connection);
-      }
-    }
+  constructor() {
+    this.userRepository = getRepository(User);
+    this.gameRepository = getRepository(Game);
+    this.statusRepository = getRepository(Status);
   }
+  
+  async createGameForTwoPlayers(player1Id: number, player2Id: number):Promise<Game|null> {
+    return DBService.withDatabase<Game|null>(async () =>{
+        const player1 = await this.userRepository.findOne({ where: { id: player1Id } });
+        const player2 = await this.userRepository.findOne({ where: { id: player2Id } });
+        const correctStatus = await this.statusRepository.findOne({ where: { name: 'Pending' }})
+        if (!player1 || !player2) {
+          console.error('Не удалось найти одного или обоих игроков.')
+          return null;
+        }
+        const game = await this.gameRepository.create({
+          RegistrationId: player1.id,
+          teamMembers: [player1, player2],
+          status: correctStatus,
+        } as Game);
+
+        const savedGame = await this.gameRepository.save(game);
+        console.log('Game created:', savedGame);
+        return savedGame;
+      });
+    }
   async CancelGame(gameId:number){
-    let connection;  
-    try {
-      connection = await connectDatabase();
-      const gameRepository = connection.getRepository(Game);
+    return DBService.withDatabase<void>(async()=>{
       if(gameId)
-      await gameRepository.delete(gameId);
-    }
-    catch(e){
-      console.error('Error Cancel Game =>',e)
-    }
-    finally{
-      if (connection) {
-        await disconnectDatabase(connection);
-      }
-    }
+      await this.gameRepository.delete(gameId);      
+    })
   }
   async AcceptGame(gameId:number){
-    let connection;
-    try {
-      connection = await connectDatabase();
-      const gameRepository = connection.getRepository(Game);
-      const statusRepository = connection.getRepository(Status);
-      const listStatus = await statusRepository.find();
+    return DBService.withDatabase<UpdateResult>( async ()=>{
+      const listStatus = await this.statusRepository.find();
       const correctStatus = listStatus.find(x=>x.name==='In battle')
-      await gameRepository.update(gameId,{status: correctStatus});
-    }
-    catch(e){
-      console.error('Error Accept Game =>',e)
-    }
-    finally{
-      if (connection) {
-        await disconnectDatabase(connection);
-      }
-    }
+      return await this.gameRepository.update(gameId,{status: correctStatus});
+    })
   }
   async getGamebyId(gameId:number){
-    let connection;
-    try {
-      connection = await connectDatabase();
-      const gameRepository = connection.getRepository(Game);      
-      await gameRepository.findOne({where:{id:gameId}});
-
-    }
-    catch(e){
-      console.error('getGamebyId => ', e)
-    }
-    finally{
-      if (connection) {
-        await disconnectDatabase(connection);
-      }
-    }
+    return DBService.withDatabase<Game|null>(async ()=>{
+      return await this.gameRepository.findOne({where:{id:gameId}});
+    })
   }
-  async getGamesByUserId(userId:number){
-    let connection;
-    try {
-      connection = await connectDatabase();
-      const gameRepository = connection.getRepository(Game);
-
-      const result = await gameRepository
-      .createQueryBuilder('game')
-      .leftJoinAndSelect('game.user', 'user')
-      .leftJoinAndSelect('game.status', 'status')
-      .select(['game.id', 'status.name', 'user.id'])
-      .where({'user.id': userId})
-      .getMany();
-      console.log("DB", result)
-      return result
-
-    }
-    catch(e){
-      console.error('get Games By User Id => ', e)
-    }
-    finally{
-      if (connection) {
-        await disconnectDatabase(connection);
-      }
-    }
+  async getGamesByUserId(){
+    throw Error("not emplemented")
   }
   async EndGame(gameId:number){
-    let connection;
-    try {
-      connection = await connectDatabase();
-      const gameRepository = connection.getRepository(Game);
-      const statusRepository = connection.getRepository(Status);
-      const listStatus = await statusRepository.find();
+    return DBService.withDatabase<UpdateResult>(async()=>{
+      const listStatus = await this.statusRepository.find();
       const correctStatus = listStatus.find(x=>x.name==='Completed')
-      await gameRepository.update(gameId,{status: correctStatus});
-
-    }
-    catch(e){
-      console.error('EndGame => ', e)
-    }
-    finally{
-      if (connection) {
-        await disconnectDatabase(connection);
-      }
-    }
+      return await this.gameRepository.update(gameId,{status: correctStatus});
+    })
   }
 }
