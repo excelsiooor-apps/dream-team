@@ -1,6 +1,6 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { Command, commandHandlers } from "./command/HandlerCommand";
-import { UserData } from './types/UserData';
+import { UserData } from './types/UserType';
 import { CommandData } from './types/CommandData';
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env' });

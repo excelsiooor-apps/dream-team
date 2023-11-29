@@ -1,7 +1,7 @@
 
 import TelegramBot from 'node-telegram-bot-api';
 import { handleStartCommand, handleHelpCommand, handleDefaultCommand,  handleRegisteredSelectTypeCommand, handleRegisteredSelectEnemyCommand, handleRegisteredAddEnemyCommand,handleGetRatingCommand, handleGetMatchCommand, handleGGGameCommand, handleWinCommand, handleAddCommand, handleAdminCommand, handleRegisteredHandlingCommand, handleEndGameCommand, Test } from './Commands';
-import { UserData } from '../types/UserData';
+import { UserData } from '../types/UserType';
 import { CommandData } from '../types/CommandData';
 
 export type CommandHandler = (bot: TelegramBot, userData: UserData, commandData: CommandData) => void;
