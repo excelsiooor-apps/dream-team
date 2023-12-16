@@ -1,7 +1,7 @@
 ---
 name: Feature
 about: Suggest an idea for this project
-title: "[TBT-0001]"
+title: "[TBT]"
 labels: ''
 assignees: ''
 
