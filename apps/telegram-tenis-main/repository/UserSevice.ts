@@ -76,7 +76,7 @@ export class UserService {
       const updateResults = await Promise.all(updatePromises);
       updateResults.forEach(result => {
         if (result.affected === 0) {
-          console.error(`User update failed for user with id ${result.generatedMaps[0].id}`);
+          console.error(`User update failed with id: ${result.generatedMaps[0].id}`);
         }
       });  
       return updateResults;

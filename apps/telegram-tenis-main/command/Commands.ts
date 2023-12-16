@@ -1,6 +1,6 @@
 import { CommandData } from './../types/CommandData';
 import TelegramBot from "node-telegram-bot-api";
-import {keyboardDefolt, keyboardHelp, keyboardRegisteredType } from "../kayboard/kayboard";
+import {keyboardDefault, keyboardHelp, keyboardRegisteredType } from "../keyboard/keyboard";
 import { User } from "../entities/User";
 import { UserData } from "../types/UserType";
 import { UserService } from '../repository/UserSevice';
@@ -33,7 +33,7 @@ export async function handleRegisteredSelectTypeCommand(bot:TelegramBot,userData
   bot.sendMessage(userData.userId, 'Выберите режим:',{reply_markup: keyboardRegisteredType })
 }
 export async function handleRegisteredSelectEnemyCommand(bot:TelegramBot,userData:UserData){
-  bot.sendMessage(userData.userId, 'Выберите противника:',{reply_markup: { inline_keyboard: await userService.getUserButton(userData.userId)|| keyboardDefolt } })
+  bot.sendMessage(userData.userId, 'Выберите противника:',{reply_markup: { inline_keyboard: await userService.getUserButton(userData.userId)|| keyboardDefault } })
 }
 export async function handleRegisteredAddEnemyCommand(bot:TelegramBot,userData:UserData, commandData: CommandData ){
   try{
@@ -85,7 +85,7 @@ export async function handleWinCommand(bot:TelegramBot,userData:UserData, comman
   const User1 = await userService.getUserById(parseInt(commandData.params[0]));
   // const User2 = await UserService.getUserByTelegramId(parseInt(commandData.params[2]));
   const User2 = await userService.getUserById(parseInt(commandData.params[1]));
-  bot.sendMessage(683008996,`Состоялась игра:\n ${User1?.username}: ${commandData.params[0]} =WIN> ${User2?.username}: ${commandData.params[1]},`,{reply_markup: { inline_keyboard: [[{text:`Подтвердить`,callback_data:`/admin true ${User1?.id} ${User2?.id}`}],[{text:`Отменить`,callback_data:`/admin false ${User1?.id}`}]]|| keyboardDefolt } })
+  bot.sendMessage(683008996,`Состоялась игра:\n ${User1?.username}: ${commandData.params[0]} =WIN> ${User2?.username}: ${commandData.params[1]},`,{reply_markup: { inline_keyboard: [[{text:`Подтвердить`,callback_data:`/admin true ${User1?.id} ${User2?.id}`}],[{text:`Отменить`,callback_data:`/admin false ${User1?.id}`}]]|| keyboardDefault } })
 }
 export async function handleEndGameCommand(bot:TelegramBot,userData:UserData) {  
   bot.sendMessage(userData.userId,"Отправлен запрос на подтверждение результата,\n как только соигрок подтвердит результат вам придет уведомление \n об обновлении рейтинга.\n В РАЗРАБОТКЕ СОРИ, пока пинать Илью")
