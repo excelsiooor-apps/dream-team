@@ -12,5 +12,6 @@
     "apps/*"
   ],
   "license": "MIT",
-  "repository": "https://github.com/excelsiooor/dream-team.git"
+  "repository": "https://github.com/excelsiooor/dream-team.git",
+  "private": true
 }
