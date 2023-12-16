@@ -1,4 +1,4 @@
 export interface CommandData {
-  command : string,
-  params : string[]
+  command: string,
+  params: string[]
 }
