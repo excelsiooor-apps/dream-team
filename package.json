@@ -7,6 +7,19 @@
     "setup:update": "yarn install --update-checksums",
     "clean:modules": "npx rimraf node_modules"
   },
+  "dependencies": {
+    "nodemon": "3.0.1",
+    "typeorm": "0.3.17"
+  },
+  "devDependencies": {
+    "@types/node-telegram-bot-api": "0.63.3",
+    "@types/nodemailer": "6.4.14",
+    "@typescript-eslint/eslint-plugin": "6.12.0",
+    "@typescript-eslint/parser": "6.12.0",
+    "eslint": "8.54.0",
+    "ts-node": "10.9.1",
+    "typescript": "5.3.2"
+  },
   "workspaces": [
     "packages/*",
     "apps/*"

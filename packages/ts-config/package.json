@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "license": "MIT",
-  "files": [],
+  "files": ["main.json", "common.json"],
   "publishConfig": {
     "access": "public"
   }
