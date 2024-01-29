@@ -5,7 +5,7 @@ import {
   ManyToOne
 
 } from 'typeorm';
-import { Match } from './Matche';
+import { Match } from './Match';
 
 @Entity()
 export class MatchResult {
