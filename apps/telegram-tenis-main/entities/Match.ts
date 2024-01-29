@@ -2,13 +2,18 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne
+  OneToOne,
+  OneToMany,
+  JoinTable,
+  ManyToMany
 } from 'typeorm';
 import { Status } from './Status';
 import { Mode } from './Mode';
+import { MatchResult } from './MatchResult';
+import { Player } from './Player';
 
 @Entity()
-export class Matche {
+export class Match {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -20,4 +25,11 @@ export class Matche {
 
   @OneToOne(() => Mode, (mode) => mode.value)
   modeId?: number;
+
+  @ManyToMany(() => Player, player => player.matchs) 
+  @JoinTable() 
+  players!: Player[];
+  
+  @OneToMany(() => MatchResult, matche => matche.match)
+  result!: MatchResult[];
 }
