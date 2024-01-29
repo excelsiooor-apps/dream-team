@@ -1,8 +1,10 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
-  Column
+  Column,
+  ManyToMany,
 } from 'typeorm';
+import { Match } from './Match';
 
 @Entity()
 export class Player {
@@ -14,4 +16,7 @@ export class Player {
 
   @Column()
   TelegramId!: number;  
+
+  @ManyToMany(()=>Match , match => match.players)
+  matchs!: Match[]
 }
