@@ -2,16 +2,17 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToMany
 } from 'typeorm';
-import { Game } from './Game';
+import { StatusType } from '../types/StatusType';
 
 @Entity()
 export class Status {
   @PrimaryGeneratedColumn()
   id!: number;
-  @Column()
-  name?: string;
-  @OneToMany(() => Game, (game: any) => game)
-  games?: Game[];
+  @Column({
+    type: 'enum',
+    enum: StatusType,
+    default: StatusType.Pending,
+  })
+  value!: StatusType;
 }
