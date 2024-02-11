@@ -1,18 +1,19 @@
+import { ModeType } from './../types/ModeType';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
 } from 'typeorm';
-import { StatusType } from '../types/StatusType';
 
 @Entity()
-export class Status {
+export class Mode {
   @PrimaryGeneratedColumn()
   id!: number;
+
   @Column({
     type: 'enum',
-    enum: StatusType,
-    default: StatusType.Pending,
+    enum: ModeType,
+    default: ModeType.OneToOne,
   })
-  value!: StatusType;
+  value?: number;
 }

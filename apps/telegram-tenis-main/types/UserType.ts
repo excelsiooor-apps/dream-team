@@ -1,4 +1,3 @@
-import { User } from "../entities/User"
 
 export interface UserData {
   userId: number
@@ -6,8 +5,3 @@ export interface UserData {
   userFirstName: string
 }
 
-export interface UserDTO {
-  user: User,
-  totalCount: number,
-  winningPercentage: number
-}
