@@ -1,0 +1,32 @@
+# Игнорировать файлы .env и .env.bot
+*.env
+*.env.bot
+/db/
+public/img/
+# Игнорировать папку node_modules/
+node_modules/
+
+# Игнорировать временные файлы и папки
+.DS_Store
+Thumbs.db
+
+# Игнорировать папку, содержащую скомпилированный код
+/dist/
+
+# Игнорировать покрытие тестов
+/coverage/
+
+# Игнорировать временные файлы от npm, yarn и других инструментов
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Игнорировать файлы проекта для различных IDE
+.idea/
+.vscode/
+*.sublime-workspace
+*.suo
+*.user
+*.sln
+*.sw?
