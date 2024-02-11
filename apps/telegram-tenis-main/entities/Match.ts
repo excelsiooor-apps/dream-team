@@ -7,10 +7,10 @@ import {
   JoinTable,
   ManyToMany
 } from 'typeorm';
-import { Status } from './Status';
 import { Mode } from './Mode';
 import { MatchResult } from './MatchResult';
 import { Player } from './Player';
+import { StatusType } from '../types/StatusType';
 
 @Entity()
 export class Match {
@@ -20,8 +20,12 @@ export class Match {
   @Column()
   createdAt?: Date;
 
-  @OneToOne(() => Status, (status) => status.value)
-  statusId?: number;
+  @Column({
+    type: 'enum',
+    enum: StatusType,
+    default: StatusType.Pending,
+  })
+  status!: StatusType;
 
   @OneToOne(() => Mode, (mode) => mode.value)
   modeId?: number;

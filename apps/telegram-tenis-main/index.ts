@@ -5,11 +5,12 @@ import { CommandData } from './types/CommandData';
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env' });
 
-const token = process.env.TOKEN || 'Token-NOT-FOUND'
+const token = process.env.DEV || 'Token-NOT-FOUND'
 
 const bot = new TelegramBot(token, {polling:true})
 
 bot.on('message', msg =>{
+  console.log('msg', msg)
   const textMessage = msg.text
   hendlerCommand(textMessage, msg);
 })

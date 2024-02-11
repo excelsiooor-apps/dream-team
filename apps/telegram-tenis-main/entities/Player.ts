@@ -3,8 +3,11 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Match } from './Match';
+import { Rating } from './Rating';
 
 @Entity()
 export class Player {
@@ -18,5 +21,9 @@ export class Player {
   TelegramId!: number;  
 
   @ManyToMany(()=>Match , match => match.players)
-  matchs!: Match[]
+  matchs!: Match[];
+
+  @OneToOne(() => Rating, rating => rating.id, { cascade: true }) // Один пользователь имеет один профиль
+  @JoinColumn()
+  rating!: Rating;
 }
