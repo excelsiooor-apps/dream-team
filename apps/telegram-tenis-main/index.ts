@@ -1,8 +1,9 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { Command, commandHandlers } from "./command/HandlerCommand";
-import { UserData } from './types/UserType';
-import { CommandData } from './types/CommandData';
 import * as dotenv from 'dotenv';
+import { CommandStorage } from './commands/CommandHandlers';
+import { CommandList, CommandDetails } from './types/Command';
+import { ERROR } from './consts';
+
 dotenv.config({ path: '.env' });
 
 const token = process.env.DEV || 'Token-NOT-FOUND'
@@ -10,58 +11,18 @@ const token = process.env.DEV || 'Token-NOT-FOUND'
 const bot = new TelegramBot(token, {polling:true})
 
 bot.on('message', msg =>{
-  console.log('msg', msg)
-  const textMessage = msg.text
-  hendlerCommand(textMessage, msg);
+  usingCommand(msg)
 })
 
 bot.on('callback_query', (query) => {
   const msg = query.message;  
   const chatId = query?.message?.chat.id;
   const messageId = query.message?.message_id;
-  
+  console.log('button data', query.data)
   removeMessage(chatId,messageId)
-  const buttonData = query.data;
-  hendlerCommand(buttonData,msg)
-  
-});
+  msg && usingCommand(msg)  
+})
 
-const parserCommand = (msg:string) : CommandData | null => {
-  if (msg?.startsWith('/')) {
-    const match = msg.match(/^\/(\w+)(?:\s+([\s\S]*))?$/);
-    if(match)
-    return {
-      command:match?.[1],
-      params:match?.[2]?.split(/\s+/) 
-    }
-    else{
-      return null
-    }
-  }else{
-    return null
-  }
-}
-const initUserData = (msg:TelegramBot.Message|undefined)=>{
-  return {
-    userId:  msg?.chat.id ||0,
-    messageText: msg?.text ||'',
-    userFirstName: msg?.chat.first_name||"userName NotFound"
-  }
-}
-const hendlerCommand = (text:string|undefined , message: TelegramBot.Message|undefined) => {
-  if(text && message){
-    const UserData : UserData = initUserData(message);
-    const CommandData : CommandData | null = parserCommand(text)
-    if(CommandData){
-      const {command} = CommandData
-      const hendler = commandHandlers[command as Command]
-      hendler?hendler(bot,UserData,CommandData):commandHandlers['def'](bot,UserData,CommandData)
-    }
-    else{
-      bot.sendMessage(UserData.userId, 'Ответочка')
-    }
-  }
-}
 const removeMessage =(chatId:number|undefined,messageId:number|undefined)=>{
   if(chatId && messageId)
   bot.deleteMessage(chatId, messageId)
@@ -72,4 +33,17 @@ const removeMessage =(chatId:number|undefined,messageId:number|undefined)=>{
       console.error('Ошибка при удалении сообщения:', error);
     }); 
 }
-
+const usingCommand = (msg: TelegramBot.Message) => {
+  const userId = msg?.chat.id
+  const commandDetails = commandParser(msg)
+  const commandHandler = commandDetails.command ? CommandStorage[commandDetails.command] : null;  
+  commandHandler ? commandHandler.execute(bot,commandDetails) : bot.sendMessage(userId, ERROR.NotFoundCommand)
+}
+const commandParser = (msg: TelegramBot.Message) => {
+  const command = msg.text?.startsWith('/') ? msg.text?.slice(1).split(' ')[0] as CommandList  :  null;
+  const params = msg.text?.split(' ').slice(1) as string[];
+  return {
+    command,
+    params
+  } as CommandDetails
+}
