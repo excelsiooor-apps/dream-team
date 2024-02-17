@@ -2,7 +2,6 @@ import { createConnection, Connection, ConnectionOptions } from 'typeorm';
 
 import { Match } from './entities/Match';
 import { MatchResult } from './entities/MatchResult';
-import { Mode } from './entities/Mode';
 import { Player } from './entities/Player';
 import { Rating } from './entities/Rating';
 import * as dotenv from 'dotenv';
@@ -19,7 +18,7 @@ export async function connectDatabase(): Promise<Connection> {
     database:  process.env.DB_DB_NAME, 
     synchronize: true, // Устанавливаем synchronize в true для автоматической синхронизации схемы базы данных (только для разработки)
     logging: true, // Включаем логирование SQL запросов (можно отключить в продакшене)
-    entities: [Match, MatchResult, Mode, Player, Rating],
+    entities: [Match, MatchResult, Player, Rating],
   };
 
   try {
