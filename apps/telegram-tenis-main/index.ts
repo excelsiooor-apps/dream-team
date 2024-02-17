@@ -1,4 +1,3 @@
-import { UserDatails } from './types/UserDetails';
 import TelegramBot from 'node-telegram-bot-api';
 import * as dotenv from 'dotenv';
 import { CommandList, CommandDetails, CommandStorage } from './types/Command';
@@ -18,9 +17,9 @@ bot.on('callback_query', (query) => {
   const msg = query.message;  
   const chatId = query?.message?.chat.id;
   const messageId = query.message?.message_id;
-  const buttonData = query.data || 'not';
+  console.log('button data', query.data)
   removeMessage(chatId,messageId)
-  msg && usingCommand(msg,buttonData)
+  msg && usingCommand(msg)  
 })
 
 const removeMessage =(chatId:number|undefined,messageId:number|undefined)=>{
@@ -33,20 +32,15 @@ const removeMessage =(chatId:number|undefined,messageId:number|undefined)=>{
       console.error('Ошибка при удалении сообщения:', error);
     }); 
 }
-const usingCommand = (msg: TelegramBot.Message, buttonCallback?: string ) => {
-  const command = buttonCallback ? buttonCallback : msg.text || 'not command'
+const usingCommand = (msg: TelegramBot.Message) => {
   const userId = msg?.chat.id
-
-  const commandDetails = commandParser(command)
-  const commandHandler = commandDetails.command ? CommandStorage[commandDetails.command] : null;
-  
-  const userDatails = new UserDatails(userId, msg.chat.first_name || 'No Name')
-
-  commandHandler ? commandHandler.execute(bot,commandDetails,userDatails) : bot.sendMessage(userId, ERROR.NotFoundCommand(command))
+  const commandDetails = commandParser(msg)
+  const commandHandler = commandDetails.command ? CommandStorage[commandDetails.command] : null;  
+  commandHandler ? commandHandler.execute(bot,commandDetails) : bot.sendMessage(userId, ERROR.NotFoundCommand)
 }
-const commandParser = (msg: string) => {
-  const command = msg?.startsWith('/') ? msg?.slice(1).split(' ')[0] as CommandList  :  null;
-  const params = msg?.split(' ').slice(1) as string[];
+const commandParser = (msg: TelegramBot.Message) => {
+  const command = msg.text?.startsWith('/') ? msg.text?.slice(1).split(' ')[0] as CommandList  :  null;
+  const params = msg.text?.split(' ').slice(1) as string[];
   return {
     command,
     params
