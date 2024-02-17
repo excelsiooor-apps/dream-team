@@ -2,15 +2,14 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
   OneToMany,
   JoinTable,
   ManyToMany
 } from 'typeorm';
-import { Mode } from './Mode';
 import { MatchResult } from './MatchResult';
 import { Player } from './Player';
 import { StatusType } from '../types/StatusType';
+import { ModeType } from '../types/ModeType';
 
 @Entity()
 export class Match {
@@ -27,8 +26,12 @@ export class Match {
   })
   status!: StatusType;
 
-  @OneToOne(() => Mode, (mode) => mode.value)
-  modeId?: number;
+  @Column({
+    type: 'enum',
+    enum: ModeType,
+    default: ModeType.OneToOne,
+  })
+  mode?: ModeType;
 
   @ManyToMany(() => Player, player => player.matchs) 
   @JoinTable() 
