@@ -1,3 +1,3 @@
 export const ERROR = {
-  NotFoundCommand: 'Not found command!'
+  NotFoundCommand: (msg:string|void) => `Command [ ${msg} ] not found !\nFor detailed information type /help`
 }
