@@ -3,7 +3,7 @@ export const keyboardDefolt = [[{ text: 'Error', callback_data: '/error' }]];
 
 export const keyboardHelp = {
   inline_keyboard: [
-    [{ text: 'Зарегистрировать игру', callback_data: '/register' }, { text: 'Недавние матчи', callback_data: '/match' }],
+    [{ text: 'Зарегиструвати гру', callback_data: '/register' }, { text: 'Нещодавні ігри', callback_data: '/match' }],
     [{ text: 'Рейтинг', callback_data: '/rating' }]
   ]
 };
