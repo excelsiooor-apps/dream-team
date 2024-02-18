@@ -1,8 +1,8 @@
 export class UserDatails {  
-  userId: number
+  telegramId: number
   userName: string
   constructor(userId: number, userName: string) {
-    this.userId = userId,
+    this.telegramId = userId,
     this.userName = userName
   }
 }
