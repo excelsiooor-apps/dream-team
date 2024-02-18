@@ -20,10 +20,14 @@ export class Player {
   @Column()
   TelegramId!: number;  
 
-  @ManyToMany(()=>Match , match => match.players)
+  @ManyToMany(() => Match)
   matchs!: Match[];
 
-  @OneToOne(() => Rating, rating => rating.id, { cascade: true }) // Один пользователь имеет один профиль
+  @OneToOne(() => Rating, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   rating!: Rating;
 }

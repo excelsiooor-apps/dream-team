@@ -5,31 +5,51 @@ import {
 import { Player } from './Player';
 
 
+
 @Entity()
 export class Rating {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToOne(()=>Player, player => player.id)
-  playerId!: number;
+  @OneToOne(() => Player, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  player!: Player;
 
-  @Column()
-  victory!:boolean;
-
-  @Column()
+  @Column({
+    default: 0
+  })
   defeat!:number;
   
-  @Column()
+  @Column({
+    default: 0
+  })
+  victory!:number;
+
+  @Column({
+    default: 0
+  })
   totalMatches!:number;
 
-  @Column()
+  @Column({
+    default: 0
+  })
   score!:number;
 
-  @Column()
+  @Column({
+    default: 0
+  })
   winGoals!:number;
 
-  @Column()
+  @Column({
+    default: 0
+  })
   defeatGoals!:number;
-  @Column()
+
+  @Column({
+    default: 0
+  })
   totalGoals!:number;
 }
