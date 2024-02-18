@@ -2,6 +2,7 @@
 import { EditNameCommand } from '../commands/EditNameCommand';
 import { HelpCommane } from '../commands/HelpCommand';
 import { RatingCommand } from '../commands/RatingCommand';
+import { RegistrationMatcheCommand } from '../commands/RegistrationMatcheCommand';
 import { StartCommand } from '../commands/StartCommand';
 import { UserDatails } from './UserDetails';
 import TelegramBot from "node-telegram-bot-api";
@@ -19,9 +20,9 @@ export enum CommandList {
   Rating = 'rating',
   EditName = 'editname',
   Help = 'help',
-  // Register = 'register',
+  Register = 'register',
   // OneVsOne = '1x1',
-  // Add = 'add',
+  // Buttle = 'buttle',
   // Yes = 'yes',
   // No = 'no',
   // Match = 'match',
@@ -37,5 +38,6 @@ export const CommandStorage: Record<CommandList, Command> = {
   [CommandList.Start]: new StartCommand(),
   [CommandList.Rating]: new RatingCommand(),
   [CommandList.EditName]: new EditNameCommand(),
-  [CommandList.Help]: new HelpCommane()
+  [CommandList.Help]: new HelpCommane(),
+  [CommandList.Register]: new RegistrationMatcheCommand()
 };

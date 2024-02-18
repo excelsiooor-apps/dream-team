@@ -1,5 +1,6 @@
+import { Player } from "../../entities/Player";
 import { Rating } from "../../entities/Rating";
-import { keyboardHelp } from "../../keyboards/keyboard";
+import { keyboardHelp, keywordListPlayers } from "../../keyboards/keyboard";
 
 export const MESSAGES = {
   StartMessage: ( name: string | void ) => `З поверненням ${name  || 'no name'}, в телеграм бот для вдосконалення гри у насольний теніс та введення статистики.`,
@@ -18,9 +19,11 @@ export const MESSAGES = {
     return result;
   },
   Help:(commandList: string[]) => `${commandList.map(item => `${item} \n`)}`,
+  RegistrationMatche: 'Кого на цей раз викликати на бій:',
   KEYBOARD: {
     START : {
       reply_markup: keyboardHelp
-    }
+    },
+    LIST_PLAYER: (players : Player[]) =>{return {reply_markup: keywordListPlayers(players)}}
   }
 }

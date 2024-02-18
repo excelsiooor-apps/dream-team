@@ -12,7 +12,12 @@ export class PlayerRepository {
     const result = await repository.save(player);
     return result;
   }
-
+  async GetAll(){
+    const result = await AppDataSource.getRepository(Player)
+    .createQueryBuilder('player')
+    .getMany()
+    return result;
+  }
   async Get(player: Player){
     const result = await AppDataSource    
     .getRepository(Player)
