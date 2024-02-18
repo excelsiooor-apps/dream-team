@@ -3,6 +3,7 @@ import { Command, CommandDetails } from "../types/Command"
 import { UserDatails } from "../types/UserDetails"
 import { MESSAGES } from "../utils/consts/Messages"
 import { PlayerService } from "../services/playerService"
+import { Rating } from "../entities/Rating"
 
 
 export class RatingCommand implements  Command {  
@@ -10,6 +11,6 @@ export class RatingCommand implements  Command {
     const playerService = new PlayerService();
     const player = await playerService.GetByTelegramId(userDatails.telegramId);
     const rating = player?.rating
-    bot.sendMessage(userDatails.telegramId, MESSAGES.RatingMessage(rating))
+    bot.sendMessage(userDatails.telegramId, MESSAGES.RatingMessage(rating || new Rating()))
   }
 }

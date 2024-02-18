@@ -11,14 +11,14 @@ export class StartCommand implements  Command {
     const playerService = new PlayerService();
     const player = await playerService.GetByTelegramId(userDatails.telegramId);
     if(player){
-      bot.sendMessage(userDatails.telegramId, MESSAGES.StartMessage(player.username), MESSAGES.KEYBOARD.START)
+      bot.sendMessage(userDatails.telegramId, MESSAGES.StartMessage(player.username || 'no name'), MESSAGES.KEYBOARD.START)
     }
     else{
       const player = new Player();
       player.TelegramId = userDatails.telegramId;
       player.username = userDatails.userName;      
       const result = await playerService.playerRepository.Create(player)
-      bot.sendMessage(result.TelegramId, MESSAGES.StartFerstMessage(result.username), MESSAGES.KEYBOARD.START)
+      bot.sendMessage(result.TelegramId, MESSAGES.StartFerstMessage(result.username || 'no name'), MESSAGES.KEYBOARD.START)
     }    
   }
 }
